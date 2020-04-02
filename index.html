@@ -24,23 +24,32 @@
           panel: document.getElementById('panel')
         });
 
-        displayRoute('Sderot Nordau 9, Tel Aviv-Yafo, Israel', 'Ramat Gan, Israel', directionsService,
-          directionsRenderer);
-      };
+        const directionsRenderer2 = new google.maps.DirectionsRenderer({
+          draggable: true,
+          map: map,
+          panel: document.getElementById('panel')
+        });
 
-      const displayRoute = (origin, destination, service, display) => {
-        service.route({
-          origin: origin,
-          destination: destination,
-          waypoints: [{
+        displayRoute('Sderot Nordau 9, Tel Aviv-Yafo, Israel', 'Ramat Gan, Israel', directionsService,
+          directionsRenderer, [{
             location: 'Tel Aviv-Yafo, Israel'
           }, {
             location: 'Sderot Yerushalayim 101, Ramat Gan, Israel'
           }, {
             location: "Degel Re'uven, Petah Tikva, Israel"
-          }],
-          travelMode: 'DRIVING',
-          avoidTolls: true
+          }], 'DRIVING');
+
+        displayRoute('HaYarkon 307-305, Tel Aviv-Yafo, Israel', 'HaHalacha Bridge, Tel Aviv-Yafo, Israel', directionsService,
+          directionsRenderer2, null, 'TRANSIT');
+
+      };
+
+      const displayRoute = (origin, destination, service, display, waypoints, mode) => {
+        service.route({
+          origin: origin,
+          destination: destination,
+          waypoints,
+          travelMode: mode,
         }, function(response, status) {
           console.log(status);
           if (status === 'OK') {
