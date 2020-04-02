@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="panel"></div>
+    <script>
+      function initMap(){
+        const map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10,
+          center: {lat: 32.109333, lng: 34.855499}
+        });
+
+        const directionsService = new google.maps.DirectionsService;
+        const directionsRenderer = new google.maps.DirectionsRenderer({
+          draggable: true,
+          map: map,
+          panel: document.getElementById('panel')
+        });
+
+        displayRoute('Sderot Nordau 9, Tel Aviv-Yafo, Israel', 'Ramat Gan, Israel', directionsService,
+          directionsRenderer);
+      };
+
+      const displayRoute = (origin, destination, service, display) => {
+        service.route({
+          origin: origin,
+          destination: destination,
+          waypoints: [{
+            location: 'Tel Aviv-Yafo, Israel'
+          }, {
+            location: 'Sderot Yerushalayim 101, Ramat Gan, Israel'
+          }, {
+            location: "Degel Re'uven, Petah Tikva, Israel"
+          }],
+          travelMode: 'DRIVING',
+          avoidTolls: true
+        }, function(response, status) {
+          console.log(status);
+          if (status === 'OK') {
+            display.setDirections(response);
+          } else {
+            alert('Could not display directions due to: ' + status);
+          }
+        });
+      }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApioxBwiuVklPoi8EP1RWyvVmsGQIo4bk&callback=initMap"
+            type="text/javascript"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #map {
+            height: 100%;
+            width: 49%;
+            float: left;
+        }
+        #panel {
+            height: 100%;
+            width: 49%;
+            float: right;
+            overflow-y: auto;
+        }
+    </style>
+</body>
+</html>
