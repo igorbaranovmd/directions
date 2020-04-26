@@ -67,7 +67,12 @@
                   const endLat = step.end_point.lat();
                   const endLon = step.end_point.lng();
 
-                  fetch(`http://www.overpass-api.de/api/xapi?way[bbox=${startLat},${startLon},${endLat},${endLon}][highway][out=json]`)
+                  fetch(`https://www.overpass-api.de/api/interpreter?data=[out:json];way(${startLon},${startLat},${endLon}, ${endLat});out%20meta;`)
+                    .then(res => res.json())
+                    .then(console.log.bind(console))
+                    .catch(console.error.bind(console));
+
+                  fetch(`https://www.overpass-api.de/api/interpreter?data=[out:json];way(${startLon},${startLat},${endLon}, ${endLat});out%20meta;`)
                     .then(res => res.json())
                     .then(console.log.bind(console))
                     .catch(console.error.bind(console));
