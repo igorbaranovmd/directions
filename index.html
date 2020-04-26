@@ -11,9 +11,12 @@
     <div id="map"></div>
     <div id="panel"></div>
     <script>
-      function initMap(){
+      let geocoder;
+      const API_KEY = 'AIzaSyApioxBwiuVklPoi8EP1RWyvVmsGQIo4bk';
+
+      function initMap() {
         const map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 10,
+          zoom: 5,
           center: {lat: 32.109333, lng: 34.855499}
         });
 
@@ -29,6 +32,8 @@
           map: map,
           panel: document.getElementById('panel')
         });
+
+        geocoder = new google.maps.Geocoder();
 
         displayRoute('Sderot Nordau 9, Tel Aviv-Yafo, Israel', 'Ramat Gan, Israel', directionsService,
           directionsRenderer, [{
@@ -51,14 +56,30 @@
           waypoints,
           travelMode: mode,
         }, function(response, status) {
-          console.log(status);
           if (status === 'OK') {
             display.setDirections(response);
+            response.routes.forEach(route => {
+              route.legs.forEach(leg => {
+                leg.steps.forEach(step => {
+                  const startLat = step.start_point.lat();
+                  const startLon = step.start_point.lng();
+
+                  const endLat = step.end_point.lat();
+                  const endLon = step.end_point.lng();
+
+                  fetch(`http://www.overpass-api.de/api/xapi?way[bbox=${startLat},${startLon},${endLat},${endLon}][highway][out=json]`)
+                    .then(res => res.json())
+                    .then(console.log.bind(console))
+                    .catch(console.error.bind(console));
+                });
+              });
+            })
           } else {
             alert('Could not display directions due to: ' + status);
           }
         });
       }
+
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApioxBwiuVklPoi8EP1RWyvVmsGQIo4bk&callback=initMap"
             type="text/javascript"></script>
